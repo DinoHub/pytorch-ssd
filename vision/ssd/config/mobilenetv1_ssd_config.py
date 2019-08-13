@@ -1,6 +1,11 @@
 import numpy as np
+import os
 
-from vision.utils.box_utils import SSDSpec, SSDBoxSizes, generate_ssd_priors
+pwd = os.path.basename(os.getcwd())
+if pwd == 'ptzaurus':
+	from pytorch_ssd.vision.utils.box_utils import SSDSpec, SSDBoxSizes, generate_ssd_priors
+else:
+	from vision.utils.box_utils import SSDSpec, SSDBoxSizes, generate_ssd_priors
 
 
 image_size = 300

@@ -1,5 +1,6 @@
 import os
 import cv2
+import torch
 
 import numpy as np
 
@@ -26,7 +27,9 @@ class SSD(object):
         self.class_names = self._get_class()
         self.net = create_mobilenetv2_ssd_lite(len(self.class_names), is_test=True)
         self.net.load(self.model_path)
-        self.predictor = create_mobilenetv2_ssd_lite_predictor(self.net, candidate_size=200)
+        self.net.eval()
+        self.net.cuda()
+        self.predictor = create_mobilenetv2_ssd_lite_predictor(self.net, candidate_size=200, device='cuda')
 
 
     def _get_class(self):
