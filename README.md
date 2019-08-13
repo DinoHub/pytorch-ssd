@@ -1,3 +1,7 @@
+# SSD implementation in Pytorch
+To download weights, please run ./get_models.sh
+
+Following are the original forked repo's README:
 # Single Shot MultiBox Detector Implementation in Pytorch
 
 This repo implements [SSD (Single Shot MultiBox Detector)](https://arxiv.org/abs/1512.02325). The implementation is heavily influenced by the projects [ssd.pytorch](https://github.com/amdegroot/ssd.pytorch) and [Detectron](https://github.com/facebookresearch/Detectron).
