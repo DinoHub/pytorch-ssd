@@ -6,6 +6,7 @@ from vision.ssd.mobilenet_v2_ssd_lite import create_mobilenetv2_ssd_lite, create
 from vision.utils.misc import Timer
 import cv2
 import sys
+import torch
 
 if len(sys.argv) < 4:
     print('Usage: python run_ssd_example.py <net type>  <model path> <label path> [video file]')
@@ -47,7 +48,7 @@ elif net_type == 'mb1-ssd':
 elif net_type == 'mb1-ssd-lite':
     predictor = create_mobilenetv1_ssd_lite_predictor(net, candidate_size=200)
 elif net_type == 'mb2-ssd-lite':
-    predictor = create_mobilenetv2_ssd_lite_predictor(net, candidate_size=200)
+    predictor = create_mobilenetv2_ssd_lite_predictor(net, candidate_size=200, device=torch.device('cuda'))
 elif net_type == 'sq-ssd-lite':
     predictor = create_squeezenet_ssd_lite_predictor(net, candidate_size=200)
 else:
@@ -62,12 +63,13 @@ while True:
         continue
     image = cv2.cvtColor(orig_image, cv2.COLOR_BGR2RGB)
     timer.start()
-    boxes, labels, probs = predictor.predict(image, 10, 0.4)
+    boxes, labels, probs = predictor.predict(image, 10, 0.4) #image, top-k, prob thresh
     interval = timer.end()
     print('Time: {:.2f}s, Detect Objects: {:d}.'.format(interval, labels.size(0)))
     for i in range(boxes.size(0)):
         box = boxes[i, :]
-        label = f"{class_names[labels[i]]}: {probs[i]:.2f}"
+        # label = f"{class_names[labels[i]]}: {probs[i]:.2f}"
+        label = '{}: {:.2f}'.format(class_names[labels[i]], probs[i])
         cv2.rectangle(orig_image, (box[0], box[1]), (box[2], box[3]), (255, 255, 0), 4)
 
         cv2.putText(orig_image, label,

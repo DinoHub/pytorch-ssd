@@ -6,6 +6,7 @@ from vision.ssd.mobilenet_v2_ssd_lite import create_mobilenetv2_ssd_lite, create
 from vision.utils.misc import Timer
 import cv2
 import sys
+import torch
 
 
 if len(sys.argv) < 5:
@@ -40,7 +41,7 @@ elif net_type == 'mb1-ssd':
 elif net_type == 'mb1-ssd-lite':
     predictor = create_mobilenetv1_ssd_lite_predictor(net, candidate_size=200)
 elif net_type == 'mb2-ssd-lite':
-    predictor = create_mobilenetv2_ssd_lite_predictor(net, candidate_size=200)
+    predictor = create_mobilenetv2_ssd_lite_predictor(net, candidate_size=200, device=torch.device('cuda'))
 elif net_type == 'sq-ssd-lite':
     predictor = create_squeezenet_ssd_lite_predictor(net, candidate_size=200)
 else:
@@ -54,7 +55,8 @@ for i in range(boxes.size(0)):
     box = boxes[i, :]
     cv2.rectangle(orig_image, (box[0], box[1]), (box[2], box[3]), (255, 255, 0), 4)
     #label = f"""{voc_dataset.class_names[labels[i]]}: {probs[i]:.2f}"""
-    label = f"{class_names[labels[i]]}: {probs[i]:.2f}"
+    # label = f"{class_names[labels[i]]}: {probs[i]:.2f}"
+    label = '{}: {}'.format(class_names[labels[i]], probs[i])
     cv2.putText(orig_image, label,
                 (box[0] + 20, box[1] + 40),
                 cv2.FONT_HERSHEY_SIMPLEX,
@@ -63,4 +65,5 @@ for i in range(boxes.size(0)):
                 2)  # line type
 path = "run_ssd_example_output.jpg"
 cv2.imwrite(path, orig_image)
-print(f"Found {len(probs)} objects. The output image is {path}")
+# print(f"Found {len(probs)} objects. The output image is {path}")
+print('Found {} objects. The output image is {}'.format(len(probs), path))
