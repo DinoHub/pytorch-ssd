@@ -117,6 +117,14 @@ def train(loader, net, criterion, optimizer, device, debug_steps=100, epoch=-1):
     running_classification_loss = 0.0
     for i, data in enumerate(loader):
         images, boxes, labels = data
+        # for label in labels:
+        #     j = 0
+        #     for indx in label:
+        #         if indx!=0:
+        #             print(j, indx)
+        #         j+=1
+        #     print()
+        # exit()
         images = images.to(device)
         boxes = boxes.to(device)
         labels = labels.to(device)
@@ -237,8 +245,6 @@ if __name__ == '__main__':
             store_labels(label_file, dataset.class_names)
             logging.info(dataset)
             num_classes = len(dataset.class_names)
-            print('NUMCLASSESPP:',num_classes)
-
         else:
             raise ValueError("Dataset tpye {} is not supported.".format(args.dataset_type))
         datasets.append(dataset)
@@ -273,7 +279,7 @@ if __name__ == '__main__':
                             shuffle=False)
     logging.info("Build network.")
     net = create_net(num_classes)
-    print(net)
+    # print(net)
     min_loss = -10000.0
     last_epoch = -1
 

@@ -1,0 +1,4 @@
+pp runs to make
+1) Reanchor
+2) No BACKGROUND class
+3) Diff sets + freezing 
