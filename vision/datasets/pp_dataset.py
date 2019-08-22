@@ -43,6 +43,7 @@ class PPDataset:
 
 
         self.class_dict = {class_name: i for i, class_name in enumerate(self.class_names)}
+        print(self.class_dict)
 
     def __getitem__(self, index):
         image_id = self.ids[index]

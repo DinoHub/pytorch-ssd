@@ -19,6 +19,7 @@ from vision.ssd.squeezenet_ssd_lite import create_squeezenet_ssd_lite
 from vision.datasets.voc_dataset import VOCDataset
 from vision.datasets.coco_dataset import COCODataset
 from vision.datasets.open_images import OpenImagesDataset
+from vision.datasets.pp_dataset import PPDataset
 from vision.nn.multibox_loss import MultiboxLoss
 from vision.ssd.config import vgg_ssd_config
 from vision.ssd.config import mobilenetv1_ssd_config
@@ -227,6 +228,16 @@ if __name__ == '__main__':
             store_labels(label_file, dataset.class_names)
             logging.info(dataset)
             num_classes = len(dataset.class_names)
+        elif args.dataset_type == 'pp':
+            dataset = PPDataset(dataset_path,
+                                  transform=train_transform, 
+                                  target_transform=target_transform)
+            # label_file = os.path.join(dataset_path, "pp.names")
+            label_file = os.path.join(args.checkpoint_folder, "pp-model-labels.txt")
+            store_labels(label_file, dataset.class_names)
+            logging.info(dataset)
+            num_classes = len(dataset.class_names)
+            print('NUMCLASSESPP:',num_classes)
 
         else:
             raise ValueError("Dataset tpye {} is not supported.".format(args.dataset_type))
@@ -249,7 +260,12 @@ if __name__ == '__main__':
         val_dataset = COCODataset(dataset_path,
                                         transform=test_transform, target_transform=target_transform,
                                         is_test=True)
-        logging.info(val_dataset)
+    elif args.dataset_type == 'pp':
+        val_dataset = PPDataset(dataset_path,
+                                        transform=test_transform, target_transform=target_transform,
+                                        is_test=True)
+        
+    logging.info(val_dataset)
     logging.info("validation dataset size: {}".format(len(val_dataset)))
 
     val_loader = DataLoader(val_dataset, args.batch_size,
@@ -257,6 +273,7 @@ if __name__ == '__main__':
                             shuffle=False)
     logging.info("Build network.")
     net = create_net(num_classes)
+    print(net)
     min_loss = -10000.0
     last_epoch = -1
 
