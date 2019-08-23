@@ -20,6 +20,7 @@ from vision.datasets.voc_dataset import VOCDataset
 from vision.datasets.coco_dataset import COCODataset
 from vision.datasets.open_images import OpenImagesDataset
 from vision.datasets.pp_dataset import PPDataset
+from vision.datasets.pp_nobg_dataset import PP_noBG_Dataset
 from vision.nn.multibox_loss import MultiboxLoss
 from vision.ssd.config import vgg_ssd_config
 from vision.ssd.config import mobilenetv1_ssd_config
@@ -245,6 +246,15 @@ if __name__ == '__main__':
             store_labels(label_file, dataset.class_names)
             logging.info(dataset)
             num_classes = len(dataset.class_names)
+        elif args.dataset_type == 'pp_nobg':
+            dataset = PP_noBG_Dataset(dataset_path,
+                                  transform=train_transform, 
+                                  target_transform=target_transform)
+            # label_file = os.path.join(dataset_path, "pp.names")
+            label_file = os.path.join(args.checkpoint_folder, "pp-nobg-model-labels.txt")
+            store_labels(label_file, dataset.class_names)
+            logging.info(dataset)
+            num_classes = len(dataset.class_names)
         else:
             raise ValueError("Dataset tpye {} is not supported.".format(args.dataset_type))
         datasets.append(dataset)
@@ -270,7 +280,10 @@ if __name__ == '__main__':
         val_dataset = PPDataset(dataset_path,
                                         transform=test_transform, target_transform=target_transform,
                                         is_test=True)
-        
+    elif args.dataset_type == 'pp_nobg':
+        val_dataset = PP_noBG_Dataset(dataset_path,
+                                        transform=test_transform, target_transform=target_transform,
+                                        is_test=True)
     logging.info(val_dataset)
     logging.info("validation dataset size: {}".format(len(val_dataset)))
 
