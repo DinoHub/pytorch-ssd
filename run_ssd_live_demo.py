@@ -14,6 +14,8 @@ if len(sys.argv) < 4:
 net_type = sys.argv[1]
 model_path = sys.argv[2]
 label_path = sys.argv[3]
+thresh = float(sys.argv[5])
+assert thresh > 0.0
 
 if len(sys.argv) >= 5:
     cap = cv2.VideoCapture(sys.argv[4])  # capture from file
@@ -63,7 +65,7 @@ while True:
         continue
     image = cv2.cvtColor(orig_image, cv2.COLOR_BGR2RGB)
     timer.start()
-    boxes, labels, probs = predictor.predict(image, 10, 0.4) #image, top-k, prob thresh
+    boxes, labels, probs = predictor.predict(image, 10, thresh) #image, top-k, prob thresh
     interval = timer.end()
     print('Time: {:.2f}s, Detect Objects: {:d}.'.format(interval, labels.size(0)))
     for i in range(boxes.size(0)):
